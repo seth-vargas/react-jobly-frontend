@@ -1,13 +1,14 @@
-export default function JobInfo({ title, salary, equity, name }) {
+/* eslint-disable react/prop-types */
+export default function JobInfo({ job }) {
   return (
     <div className="card mb-3">
       <div className="card-body">
-        <h5 className="card-title">{title}</h5>
-        <h6 className="card-subtitle">{name}</h6>
+        <h5 className="card-title">{job.title}</h5>
+        <h6 className="card-subtitle">{job.name}</h6>
         <p className="card-text mt-3">
-          Salary: ${salary || 0}
+          Salary: ${job.salary || 0}
           <br />
-          Equity: {equity || 0}%
+          Equity: {job.equity || 0}%
         </p>
       </div>
     </div>

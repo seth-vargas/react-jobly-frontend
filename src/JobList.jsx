@@ -19,16 +19,7 @@ export default function JobList() {
     <>
       <h1>Jobs</h1>
       <SearchForm />
-      {jobs &&
-        jobs.map((job) => (
-          <JobInfo
-            title={job.title}
-            salary={job.salary}
-            equity={job.equity}
-            name={job.companyName}
-            key={job.id}
-          />
-        ))}
+      {jobs && jobs.map((job) => <JobInfo job={job} key={job.id} />)}
     </>
   );
 }

@@ -21,12 +21,7 @@ export default function CompanyList() {
       <SearchForm />
       {companies &&
         companies.map((company) => (
-          <CompanyCard
-            name={company.name}
-            description={company.description}
-            handle={company.handle}
-            key={company.handle}
-          />
+          <CompanyCard company={company} key={company.handle} />
         ))}
     </>
   );
