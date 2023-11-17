@@ -1,4 +1,4 @@
-export default function CompanyInfo({ name, description, handle }) {
+export default function CompanyCard({ name, description, handle }) {
   return (
     <div className="card mb-3">
       <div className="card-body">

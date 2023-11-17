@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import JoblyApi from "../../api";
-import CompanyInfo from "./CompanyInfo";
+import CompanyCard from "./CompanyCard";
 import SearchForm from "./SearchForm";
 
 export default function CompanyList() {
@@ -21,7 +21,7 @@ export default function CompanyList() {
       <SearchForm />
       {companies &&
         companies.map((company) => (
-          <CompanyInfo
+          <CompanyCard
             name={company.name}
             description={company.description}
             handle={company.handle}
