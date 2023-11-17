@@ -9,8 +9,9 @@ export default function JobList() {
   useEffect(() => {
     // TODO : Make API Call here
     async function getData() {
-      const data = await JoblyApi.request(`jobs`);
-      setJobs(data.jobs);
+      let res = await JoblyApi.getJobs();
+      console.log(res);
+      setJobs(res);
     }
     getData();
   }, []);
@@ -18,8 +19,12 @@ export default function JobList() {
   return (
     <>
       <h1>Jobs</h1>
-      <SearchForm />
-      {jobs && jobs.map((job) => <JobInfo job={job} key={job.id} />)}
+      <SearchForm setState={setJobs} type="jobs" />
+      {jobs.length ? (
+        jobs.map((job) => <JobInfo job={job} key={job.id} />)
+      ) : (
+        <p className="lead text-danger">Sorry, no match was found.</p>
+      )}
     </>
   );
 }

@@ -9,8 +9,9 @@ export default function CompanyList() {
   useEffect(() => {
     // TODO : Make API Call here
     async function getData() {
-      const data = await JoblyApi.request(`companies`);
-      setCompanies(data.companies);
+      let res = await JoblyApi.getCompanies();
+      console.log(res);
+      setCompanies(res);
     }
     getData();
   }, []);
@@ -18,11 +19,14 @@ export default function CompanyList() {
   return (
     <>
       <h1>Companies</h1>
-      <SearchForm />
-      {companies &&
+      <SearchForm setState={setCompanies} type="companies" />
+      {companies.length ? (
         companies.map((company) => (
           <CompanyCard company={company} key={company.handle} />
-        ))}
+        ))
+      ) : (
+        <p className="lead text-danger">Sorry, no match was found.</p>
+      )}
     </>
   );
 }
