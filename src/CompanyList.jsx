@@ -24,6 +24,7 @@ export default function CompanyList() {
           <CompanyInfo
             name={company.name}
             description={company.description}
+            handle={company.handle}
             key={company.handle}
           />
         ))}
