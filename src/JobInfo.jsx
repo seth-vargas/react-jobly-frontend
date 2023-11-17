@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 export default function JobInfo({ job }) {
   return (
-    <div className="card mb-3">
+    <div className="card mb-3 box">
       <div className="card-body">
         <h5 className="card-title">{job.title}</h5>
         <h6 className="card-subtitle">{job.name}</h6>

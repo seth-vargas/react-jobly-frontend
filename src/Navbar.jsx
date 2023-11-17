@@ -7,7 +7,7 @@ export default function Navbar() {
         <Link className="navbar-brand" to="/">
           Jobly
         </Link>
-        <div>
+        <div className="d-flex align-items-center">
           <Link to="/companies" className="me-2 text-decoration-none">
             Companies
           </Link>
@@ -17,7 +17,7 @@ export default function Navbar() {
           <Link to="/profile" className="me-2 text-decoration-none">
             Profile
           </Link>
-          <Link to="/logout" className="btn btn-danger">
+          <Link to="/logout" className="btn btn-outline-danger btn-sm">
             Logout
           </Link>
         </div>
