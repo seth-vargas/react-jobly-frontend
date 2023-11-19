@@ -76,6 +76,12 @@ export default class JoblyApi {
     return res.jobs;
   }
 
+  /** Apply to a job */
+
+  static async applyToJob(username, id) {
+    await this.request(`users/${username}/jobs/${id}`, {}, "post");
+  }
+
   /** Create new user in db */
 
   static async registerUser(formData) {

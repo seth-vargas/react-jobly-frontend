@@ -1,9 +1,10 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import JoblyApi from "../api/api";
 import SearchForm from "./SearchForm";
 import JobInfo from "./JobInfo";
 
-export default function JobList() {
+export default function JobList({ applyToJob, hasAppliedToJob }) {
   const [jobs, setJobs] = useState([]);
 
   useEffect(() => {
@@ -19,7 +20,14 @@ export default function JobList() {
       <h1>Jobs</h1>
       <SearchForm setState={setJobs} type="jobs" />
       {jobs.length ? (
-        jobs.map((job) => <JobInfo job={job} key={job.id} />)
+        jobs.map((job) => (
+          <JobInfo
+            job={job}
+            key={job.id}
+            applyToJob={applyToJob}
+            hasAppliedToJob={hasAppliedToJob}
+          />
+        ))
       ) : (
         <p className="lead text-danger">Sorry, no match was found.</p>
       )}

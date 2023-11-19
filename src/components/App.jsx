@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 
 import Layout from "./Layout";
@@ -24,27 +24,44 @@ export default function App() {
   const [token, setToken] = useLocalStorage(TOKEN_STORAGE_ID);
   const [user, setUser] = useLocalStorage("user");
   const { auth, setAuth } = useAuth();
+  const [jobIds, setJobIds] = useState(new Set([]));
 
   console.log("JoblyApi.token:", JoblyApi.token);
+  console.log("Current User:", user);
 
   useEffect(() => {
     async function checkForToken() {
       if (token && user) {
         try {
+          const currUser = await JoblyApi.getCurrentUser(user.username);
           setAuth(token);
-          setUser(user);
+          setUser(currUser);
           JoblyApi.token = token;
+          setJobIds(new Set(user.applications));
         } catch (error) {
           console.error("Issue loading", error);
           setToken(undefined);
           setUser(undefined);
           setAuth(undefined);
+          setJobIds(undefined);
         }
       }
     }
 
     checkForToken();
-  }, [token, auth, setAuth, user, setUser, setToken]);
+  }, [token, auth, setAuth, setToken, setUser]);
+
+  /** Checks if a job has been applied for. */
+  function hasAppliedToJob(id) {
+    return jobIds.has(id);
+  }
+
+  /** Apply to a job: make API call and update set of application IDs. */
+  function applyToJob(id) {
+    if (hasAppliedToJob(id)) return;
+    JoblyApi.applyToJob(user.username, id);
+    setJobIds(new Set([...jobIds, id]));
+  }
 
   return (
     <>
@@ -84,7 +101,15 @@ export default function App() {
             <Route element={<RequireAuth />}>
               <Route path="/companies" element={<CompanyList />} />
               <Route path="/companies/:handle" element={<Company />} />
-              <Route path="/jobs" element={<JobList />} />
+              <Route
+                path="/jobs"
+                element={
+                  <JobList
+                    applyToJob={applyToJob}
+                    hasAppliedToJob={hasAppliedToJob}
+                  />
+                }
+              />
               <Route
                 path="/profile"
                 element={<EditProfileForm user={user} setUser={setUser} />}
