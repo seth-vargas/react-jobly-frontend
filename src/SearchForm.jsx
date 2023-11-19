@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useForm } from "react-hook-form";
-import JoblyApi from "../../api";
+import JoblyApi from "./api/api";
 
 export default function SearchForm({ setState, type }) {
   const {
@@ -16,11 +16,10 @@ export default function SearchForm({ setState, type }) {
     } else if (type === "jobs") {
       res = await JoblyApi.getJobs(data.searchTerm);
     }
-    console.log(res);
+
     setState(res);
     reset();
   }
-  console.log("Errors:", errors);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="my-3" autoComplete="off">

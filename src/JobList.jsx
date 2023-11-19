@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import JoblyApi from "../../api";
+import JoblyApi from "./api/api";
 import SearchForm from "./SearchForm";
 import JobInfo from "./JobInfo";
 
@@ -7,10 +7,8 @@ export default function JobList() {
   const [jobs, setJobs] = useState([]);
 
   useEffect(() => {
-    // TODO : Make API Call here
     async function getData() {
       let res = await JoblyApi.getJobs();
-      console.log(res);
       setJobs(res);
     }
     getData();

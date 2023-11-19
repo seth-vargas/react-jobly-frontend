@@ -1,17 +1,34 @@
+/* eslint-disable react/prop-types */
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import JoblyApi from "./api/api";
+import { useState } from "react";
 
-export default function LoginForm() {
+export default function LoginForm({ setToken, setAuth }) {
+  const navigate = useNavigate();
+  const [error, setError] = useState();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const onSubmit = (data) => console.log(data);
-  console.log(errors);
+
+  const onSubmit = async (data) => {
+    try {
+      let token = await JoblyApi.loginUser(data);
+
+      setToken(token);
+      setAuth(token);
+      navigate("/");
+    } catch (error) {
+      setError(error[0]);
+    }
+  };
 
   return (
     <>
+      {error && <div className="alert alert-danger text-center">{error}</div>}
       <h1>Log In</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-3">
