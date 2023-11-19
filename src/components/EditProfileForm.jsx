@@ -1,14 +1,17 @@
+/* eslint-disable react/prop-types */
 import { useForm } from "react-hook-form";
+import JoblyApi from "../api/api";
+import { useNavigate } from "react-router-dom";
 
-export default function EditProfileForm() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+export default function EditProfileForm({ user, setUser }) {
+  const { register, handleSubmit } = useForm();
+  const navigate = useNavigate();
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     console.log(data);
+    const newUser = await JoblyApi.editUser(data, user.username);
+    setUser(newUser);
+    navigate("/");
   };
 
   return (
@@ -25,12 +28,8 @@ export default function EditProfileForm() {
             disabled
             className="form-control"
             type="text"
-            {...register("username", {
-              required: true,
-              max: 50,
-              min: 1,
-              maxLength: 50,
-            })}
+            defaultValue={user.username}
+            {...register("username")}
           />
         </div>
         <div className="mb-3">
@@ -42,12 +41,8 @@ export default function EditProfileForm() {
             autoComplete="none"
             className="form-control"
             type="text"
-            {...register("firstName", {
-              required: true,
-              max: 50,
-              min: 1,
-              maxLength: 50,
-            })}
+            defaultValue={user.firstName}
+            {...register("firstName")}
           />
         </div>
         <div className="mb-3">
@@ -59,12 +54,8 @@ export default function EditProfileForm() {
             autoComplete="none"
             className="form-control"
             type="text"
-            {...register("lastName", {
-              required: true,
-              max: 50,
-              min: 1,
-              maxLength: 50,
-            })}
+            defaultValue={user.lastName}
+            {...register("lastName")}
           />
         </div>
         <div className="mb-3">
@@ -76,7 +67,8 @@ export default function EditProfileForm() {
             autoComplete="none"
             className="form-control"
             type="text"
-            {...register("email", { required: true })}
+            defaultValue={user.email}
+            {...register("email")}
           />
         </div>
         <input type="submit" className="btn btn-primary" />

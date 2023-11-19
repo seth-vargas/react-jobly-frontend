@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import JoblyApi from "./api/api";
+import JoblyApi from "../api/api";
 import { useState } from "react";
 
-export default function LoginForm({ setToken, setAuth }) {
+export default function LoginForm({ setToken, setAuth, setUser }) {
   const navigate = useNavigate();
   const [error, setError] = useState();
 
@@ -16,10 +16,13 @@ export default function LoginForm({ setToken, setAuth }) {
 
   const onSubmit = async (data) => {
     try {
-      let token = await JoblyApi.loginUser(data);
+      let res = await JoblyApi.loginUser(data);
 
-      setToken(token);
-      setAuth(token);
+      setToken(res.token);
+      setAuth(res.token);
+      setUser(res.user);
+      JoblyApi.token = res.token;
+
       navigate("/");
     } catch (error) {
       setError(error[0]);

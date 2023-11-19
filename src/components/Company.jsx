@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import JoblyApi from "./api/api";
+import JoblyApi from "../api/api";
 import JobInfo from "./JobInfo";
 
 export default function Company() {

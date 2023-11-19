@@ -94,13 +94,13 @@ export default class JoblyApi {
 
   static async loginUser(formData) {
     let res = await this.request("auth/token", formData, "post");
+    console.log(res);
 
-    return res.token;
+    return res;
   }
 
   static async editUser(formData, username) {
     let res = await this.request(`users/${username}`, formData, "patch");
-    console.log(res);
     return res.user;
   }
 }

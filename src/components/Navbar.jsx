@@ -1,14 +1,17 @@
 /* eslint-disable react/prop-types */
 import { Link, useNavigate } from "react-router-dom";
+import JoblyApi from "../api/api";
 
-export default function Navbar({ auth, setAuth, setToken }) {
+export default function Navbar({ auth, setAuth, setToken, setUser }) {
   const navigate = useNavigate();
 
   function logout() {
     console.log("Logging out");
     // Reset auth value & remove localStorage token
-    setAuth(null);
-    setToken(null);
+    setAuth(undefined);
+    setToken(undefined);
+    setUser(undefined);
+    JoblyApi.token = undefined;
 
     navigate("/login");
   }

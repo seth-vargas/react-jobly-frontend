@@ -13,46 +13,71 @@ import NotFound from "./NotFound";
 import Company from "./Company";
 import RequireAuth from "./RequireAuth";
 
-import useLocalStorage from "./hooks/useLocalStorage";
-import useAuth from "./hooks/useAuth";
+import useLocalStorage from "../hooks/useLocalStorage";
+import useAuth from "../hooks/useAuth";
+import JoblyApi from "../api/api";
 
 export const TOKEN_STORAGE_ID = "jobly-token";
 
 export default function App() {
   console.log("Rendering App");
   const [token, setToken] = useLocalStorage(TOKEN_STORAGE_ID);
+  const [user, setUser] = useLocalStorage("user");
   const { auth, setAuth } = useAuth();
+
+  console.log("JoblyApi.token:", JoblyApi.token);
 
   useEffect(() => {
     async function checkForToken() {
-      if (token) {
+      if (token && user) {
         try {
           setAuth(token);
+          setUser(user);
+          JoblyApi.token = token;
         } catch (error) {
           console.error("Issue loading", error);
-          setAuth(null);
+          setToken(undefined);
+          setUser(undefined);
+          setAuth(undefined);
         }
       }
     }
 
     checkForToken();
-  }, [token, auth, setAuth]);
+  }, [token, auth, setAuth, user, setUser, setToken]);
 
   return (
     <>
-      <Navbar auth={auth} setAuth={setAuth} setToken={setToken} />
+      <Navbar
+        auth={auth}
+        setAuth={setAuth}
+        setToken={setToken}
+        setUser={setUser}
+      />
       <main className="container my-3">
         <Routes>
           <Route path="/" element={<Layout />}>
             {/* Public Routes */}
-            <Route path="/" element={<Homepage auth={auth} />} />
+            <Route path="/" element={<Homepage auth={auth} user={user} />} />
             <Route
               path="/login"
-              element={<LoginForm setToken={setToken} setAuth={setAuth} />}
+              element={
+                <LoginForm
+                  setToken={setToken}
+                  setAuth={setAuth}
+                  setUser={setUser}
+                />
+              }
             />
             <Route
               path="/signup"
-              element={<SignupForm setToken={setToken} setAuth={setAuth} />}
+              element={
+                <SignupForm
+                  setToken={setToken}
+                  setAuth={setAuth}
+                  setUser={setUser}
+                />
+              }
             />
 
             {/* Protected Routes */}
@@ -60,7 +85,10 @@ export default function App() {
               <Route path="/companies" element={<CompanyList />} />
               <Route path="/companies/:handle" element={<Company />} />
               <Route path="/jobs" element={<JobList />} />
-              <Route path="/profile" element={<EditProfileForm />} />
+              <Route
+                path="/profile"
+                element={<EditProfileForm user={user} setUser={setUser} />}
+              />
             </Route>
 
             {/* Catch All */}

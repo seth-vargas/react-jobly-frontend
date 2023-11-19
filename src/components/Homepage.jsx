@@ -16,7 +16,7 @@ function LoggedOut() {
     </>
   );
 }
-export default function Homepage({ auth }) {
+export default function Homepage({ auth, user }) {
   return (
     <div className="d-flex flex-column gap-3 align-items-center">
       <h1>Jobly</h1>
@@ -24,6 +24,7 @@ export default function Homepage({ auth }) {
       <p className="lead">All the jobs in one place</p>
 
       {!auth && <LoggedOut />}
+      {user && <p className="fs-4">Welcome back, {user.firstName}.</p>}
     </div>
   );
 }
