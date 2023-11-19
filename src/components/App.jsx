@@ -25,6 +25,7 @@ export default function App() {
   const [user, setUser] = useLocalStorage("user");
   const { auth, setAuth } = useAuth();
   const [jobIds, setJobIds] = useState(new Set([]));
+  const [errors, setErrors] = useState();
 
   console.log("JoblyApi.token:", JoblyApi.token);
   console.log("Current User:", user);
@@ -33,9 +34,8 @@ export default function App() {
     async function checkForToken() {
       if (token && user) {
         try {
-          const currUser = await JoblyApi.getCurrentUser(user.username);
           setAuth(token);
-          setUser(currUser);
+          setUser(user);
           JoblyApi.token = token;
           setJobIds(new Set(user.applications));
         } catch (error) {
@@ -49,7 +49,7 @@ export default function App() {
     }
 
     checkForToken();
-  }, [token, auth, setAuth, setToken, setUser]);
+  }, [token, auth, setAuth, user, setUser, setToken]);
 
   /** Checks if a job has been applied for. */
   function hasAppliedToJob(id) {
@@ -58,9 +58,14 @@ export default function App() {
 
   /** Apply to a job: make API call and update set of application IDs. */
   function applyToJob(id) {
-    if (hasAppliedToJob(id)) return;
-    JoblyApi.applyToJob(user.username, id);
-    setJobIds(new Set([...jobIds, id]));
+    try {
+      if (hasAppliedToJob(id)) return;
+      JoblyApi.applyToJob(user.username, id);
+      setJobIds(new Set([...jobIds, id]));
+    } catch (error) {
+      console.log("error", error);
+      setErrors(error);
+    }
   }
 
   return (
@@ -72,6 +77,15 @@ export default function App() {
         setUser={setUser}
       />
       <main className="container my-3">
+        {errors && (
+          <ul className="alert alert-danger text-center">
+            {errors.map((err) => (
+              <li key={err} className="list-unstyled">
+                {err}
+              </li>
+            ))}
+          </ul>
+        )}
         <Routes>
           <Route path="/" element={<Layout />}>
             {/* Public Routes */}
@@ -83,6 +97,7 @@ export default function App() {
                   setToken={setToken}
                   setAuth={setAuth}
                   setUser={setUser}
+                  setErrors={setErrors}
                 />
               }
             />
@@ -93,6 +108,7 @@ export default function App() {
                   setToken={setToken}
                   setAuth={setAuth}
                   setUser={setUser}
+                  setErrors={setErrors}
                 />
               }
             />
@@ -112,7 +128,13 @@ export default function App() {
               />
               <Route
                 path="/profile"
-                element={<EditProfileForm user={user} setUser={setUser} />}
+                element={
+                  <EditProfileForm
+                    user={user}
+                    setUser={setUser}
+                    setErrors={setErrors}
+                  />
+                }
               />
             </Route>
 

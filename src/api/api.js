@@ -86,7 +86,7 @@ export default class JoblyApi {
 
   static async registerUser(formData) {
     let res = await this.request("auth/register", formData, "post");
-    return res.token;
+    return res;
   }
 
   /** Get the current user. */

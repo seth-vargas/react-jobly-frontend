@@ -2,17 +2,11 @@
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import JoblyApi from "../api/api";
-import { useState } from "react";
 
-export default function SignupForm({ setToken, setAuth, setUser }) {
+export default function SignupForm({ setToken, setAuth, setUser, setErrors }) {
   const navigate = useNavigate();
-  const [error, setError] = useState();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit } = useForm();
 
   const onSubmit = async (data) => {
     try {
@@ -27,13 +21,12 @@ export default function SignupForm({ setToken, setAuth, setUser }) {
       // redirect to homepage
       navigate("/");
     } catch (error) {
-      setError(error[0]);
+      setErrors(error);
     }
   };
 
   return (
     <>
-      {error && <div className="alert alert-danger text-center">{error}</div>}
       <h1>Sign Up</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-3">

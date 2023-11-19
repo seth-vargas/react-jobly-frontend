@@ -8,8 +8,8 @@ export default function EditProfileForm({ user, setUser }) {
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
-    console.log(data);
     const newUser = await JoblyApi.editUser(data, user.username);
+    newUser.applications = user.applications;
     setUser(newUser);
     navigate("/");
   };

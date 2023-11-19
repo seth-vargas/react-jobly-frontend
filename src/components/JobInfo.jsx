@@ -1,5 +1,15 @@
+import { useEffect, useState } from "react";
+
 /* eslint-disable react/prop-types */
 export default function JobInfo({ job, applyToJob, hasAppliedToJob }) {
+  const [applied, setApplied] = useState(false);
+
+  useEffect(() => {
+    if (hasAppliedToJob(job.id)) {
+      setApplied(true);
+    }
+  }, [hasAppliedToJob, job.id]);
+
   return (
     <div className="card mb-3">
       <div className="card-body">
@@ -10,7 +20,7 @@ export default function JobInfo({ job, applyToJob, hasAppliedToJob }) {
           <br />
           Equity: {job.equity || 0}%
         </p>
-        {hasAppliedToJob(job.id) ? (
+        {applied ? (
           <button className="btn btn-outline-primary" disabled>
             Application sent!
           </button>
