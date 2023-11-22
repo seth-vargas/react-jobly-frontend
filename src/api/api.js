@@ -1,9 +1,13 @@
 import axios from "axios";
 
-console.log(process.env.NODE_ENV);
-
-// const BASE_URL = "http://localhost:3001";
-const BASE_URL = "https://react-jobly-backend-wf6z.onrender.com";
+let BASE_URL;
+const env = process.env.NODE_ENV;
+console.log(env);
+if (env === "development") {
+  BASE_URL = "http://localhost:3001";
+} else {
+  BASE_URL = "https://react-jobly-backend-wf6z.onrender.com";
+}
 
 /** API Class.
  *
