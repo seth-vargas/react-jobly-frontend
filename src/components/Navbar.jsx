@@ -2,16 +2,22 @@
 import { Link, useNavigate } from "react-router-dom";
 import JoblyApi from "../api/api";
 
-export default function Navbar({ auth, setAuth, setToken, setUser }) {
+export default function Navbar({
+  auth,
+  setAuth,
+  setToken,
+  setUser,
+  setJobIds,
+}) {
   const navigate = useNavigate();
 
   function logout() {
-    console.log("Logging out");
     // Reset auth value & remove localStorage token
     setAuth(undefined);
     setToken(undefined);
     setUser(undefined);
     JoblyApi.token = undefined;
+    setJobIds(undefined);
 
     navigate("/login");
   }

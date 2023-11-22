@@ -82,7 +82,6 @@ export default function App() {
 
   if (isLoading) return <Loading />;
 
-  console.log("Rendering App");
   return (
     <>
       <Navbar
@@ -90,6 +89,7 @@ export default function App() {
         setAuth={setAuth}
         setToken={setToken}
         setUser={setUser}
+        setJobIds={setJobIds}
       />
       <main className="container my-3">
         {errors.length > 0 && (

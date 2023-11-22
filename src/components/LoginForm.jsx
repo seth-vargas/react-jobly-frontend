@@ -23,7 +23,7 @@ export default function LoginForm({ setToken, setAuth, setUser, setErrors }) {
       setIsLoading(false);
 
       let currUser = await JoblyApi.getCurrentUser(res.user.username);
-      console.log(currUser);
+
       setUser(currUser);
       navigate("/");
     } catch (error) {
