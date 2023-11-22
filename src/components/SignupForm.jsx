@@ -2,25 +2,34 @@
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import JoblyApi from "../api/api";
+import { useState } from "react";
 
 export default function SignupForm({ setToken, setAuth, setUser, setErrors }) {
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const { register, handleSubmit } = useForm();
 
   const onSubmit = async (data) => {
     try {
+      setIsLoading(true);
+      setErrors([]);
+
       let res = await JoblyApi.registerUser(data);
 
       // store token in localStorage & auth
       setToken(res.token);
       setAuth(res.token);
-      setUser(res.user);
       JoblyApi.token = res.token;
+
+      let currUser = await JoblyApi.getCurrentUser(res.user.username);
+
+      setUser(currUser);
 
       // redirect to homepage
       navigate("/");
     } catch (error) {
+      setIsLoading(false);
       setErrors(error);
     }
   };
@@ -109,7 +118,18 @@ export default function SignupForm({ setToken, setAuth, setUser, setErrors }) {
             {...register("email", { required: true })}
           />
         </div>
-        <input type="submit" className="btn btn-primary" />
+        {isLoading ? (
+          <button className="btn btn-primary" type="button" disabled>
+            <span
+              className="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+            ></span>
+            Loading...
+          </button>
+        ) : (
+          <input type="submit" className="btn btn-primary" />
+        )}
       </form>
       <p className="lead">
         Already have an account? <Link to="/login">Log In</Link>

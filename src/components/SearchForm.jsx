@@ -2,23 +2,25 @@
 import { useForm } from "react-hook-form";
 import JoblyApi from "../api/api";
 
-export default function SearchForm({ setState, type }) {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm();
-  async function onSubmit(data) {
-    let res;
-    if (type === "companies") {
-      res = await JoblyApi.getCompanies(data.searchTerm);
-    } else if (type === "jobs") {
-      res = await JoblyApi.getJobs(data.searchTerm);
-    }
+export default function SearchForm({ setState, type, setIsLoading }) {
+  const { register, handleSubmit, reset } = useForm();
 
-    setState(res);
-    reset();
+  async function onSubmit(data) {
+    try {
+      setIsLoading(true);
+      let res;
+      if (type === "companies") {
+        res = await JoblyApi.getCompanies(data.searchTerm);
+      } else if (type === "jobs") {
+        res = await JoblyApi.getJobs(data.searchTerm);
+      }
+
+      setIsLoading(false);
+      setState(res);
+      reset();
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -30,8 +32,6 @@ export default function SearchForm({ setState, type }) {
           placeholder="Search something"
           {...register("searchTerm")}
         />
-
-        {/* <input type="submit" className="btn btn-outline-primary" /> */}
       </div>
     </form>
   );

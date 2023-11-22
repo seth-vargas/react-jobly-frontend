@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 
 import Layout from "./Layout";
 import Homepage from "./Homepage";
@@ -16,40 +16,52 @@ import RequireAuth from "./RequireAuth";
 import useLocalStorage from "../hooks/useLocalStorage";
 import useAuth from "../hooks/useAuth";
 import JoblyApi from "../api/api";
+import { jwtDecode } from "jwt-decode";
+import Loading from "./Loading";
 
 export const TOKEN_STORAGE_ID = "jobly-token";
 
 export default function App() {
-  console.log("Rendering App");
+  const [isLoading, setIsLoading] = useState(false);
   const [token, setToken] = useLocalStorage(TOKEN_STORAGE_ID);
   const [user, setUser] = useLocalStorage("user");
   const { auth, setAuth } = useAuth();
   const [jobIds, setJobIds] = useState(new Set([]));
-  const [errors, setErrors] = useState();
+  const [errors, setErrors] = useState([]);
 
-  console.log("JoblyApi.token:", JoblyApi.token);
-  console.log("Current User:", user);
+  let location = useLocation();
 
   useEffect(() => {
     async function checkForToken() {
-      if (token && user) {
+      if (token) {
         try {
+          setIsLoading(true);
+
           setAuth(token);
-          setUser(user);
           JoblyApi.token = token;
-          setJobIds(new Set(user.applications));
+
+          let { username } = jwtDecode(token);
+          let currUser = await JoblyApi.getCurrentUser(username);
+
+          setUser(currUser);
+          setJobIds(new Set(currUser?.applications));
         } catch (error) {
-          console.error("Issue loading", error);
+          setErrors(error);
+          JoblyApi.token = undefined;
           setToken(undefined);
           setUser(undefined);
           setAuth(undefined);
           setJobIds(undefined);
         }
+        setIsLoading(false);
       }
     }
-
     checkForToken();
-  }, [token, auth, setAuth, user, setUser, setToken]);
+  }, [token]);
+
+  useEffect(() => {
+    setErrors([]);
+  }, [location]);
 
   /** Checks if a job has been applied for. */
   function hasAppliedToJob(id) {
@@ -57,7 +69,7 @@ export default function App() {
   }
 
   /** Apply to a job: make API call and update set of application IDs. */
-  function applyToJob(id) {
+  async function applyToJob(id) {
     try {
       if (hasAppliedToJob(id)) return;
       JoblyApi.applyToJob(user.username, id);
@@ -68,6 +80,9 @@ export default function App() {
     }
   }
 
+  if (isLoading) return <Loading />;
+
+  console.log("Rendering App");
   return (
     <>
       <Navbar
@@ -77,7 +92,7 @@ export default function App() {
         setUser={setUser}
       />
       <main className="container my-3">
-        {errors && (
+        {errors.length > 0 && (
           <ul className="alert alert-danger text-center">
             {errors.map((err) => (
               <li key={err} className="list-unstyled">
@@ -116,7 +131,15 @@ export default function App() {
             {/* Protected Routes */}
             <Route element={<RequireAuth />}>
               <Route path="/companies" element={<CompanyList />} />
-              <Route path="/companies/:handle" element={<Company />} />
+              <Route
+                path="/companies/:handle"
+                element={
+                  <Company
+                    applyToJob={applyToJob}
+                    hasAppliedToJob={hasAppliedToJob}
+                  />
+                }
+              />
               <Route
                 path="/jobs"
                 element={

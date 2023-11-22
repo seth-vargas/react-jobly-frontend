@@ -1,9 +1,10 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import JoblyApi from "../api/api";
 import JobInfo from "./JobInfo";
 
-export default function Company() {
+export default function Company({ applyToJob, hasAppliedToJob }) {
   const [company, setCompany] = useState({});
   const { handle } = useParams();
 
@@ -20,7 +21,14 @@ export default function Company() {
       <p className="lead">{company.description}</p>
       <div>
         {company.jobs &&
-          company.jobs.map((job) => <JobInfo job={job} key={job.id} />)}
+          company.jobs.map((job) => (
+            <JobInfo
+              job={job}
+              key={job.id}
+              applyToJob={applyToJob}
+              hasAppliedToJob={hasAppliedToJob}
+            />
+          ))}
       </div>
     </>
   );

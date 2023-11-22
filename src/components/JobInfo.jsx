@@ -8,7 +8,7 @@ export default function JobInfo({ job, applyToJob, hasAppliedToJob }) {
     if (hasAppliedToJob(job.id)) {
       setApplied(true);
     }
-  }, [hasAppliedToJob, job.id]);
+  }, [hasAppliedToJob, job.id, applied]);
 
   return (
     <div className="card mb-3">
@@ -21,7 +21,7 @@ export default function JobInfo({ job, applyToJob, hasAppliedToJob }) {
           Equity: {job.equity || 0}%
         </p>
         {applied ? (
-          <button className="btn btn-outline-primary" disabled>
+          <button className="btn btn-primary" disabled>
             Application sent!
           </button>
         ) : (

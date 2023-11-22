@@ -2,16 +2,25 @@
 import { useForm } from "react-hook-form";
 import JoblyApi from "../api/api";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 export default function EditProfileForm({ user, setUser }) {
+  const [isLoading, setIsLoading] = useState(false);
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
-    const newUser = await JoblyApi.editUser(data, user.username);
-    newUser.applications = user.applications;
-    setUser(newUser);
-    navigate("/");
+    try {
+      setIsLoading(true);
+
+      const newUser = await JoblyApi.editUser(data, user.username);
+      newUser.applications = user.applications;
+      setUser(newUser);
+      navigate("/");
+    } catch (error) {
+      setIsLoading(false);
+      console.log(error);
+    }
   };
 
   return (
@@ -71,7 +80,18 @@ export default function EditProfileForm({ user, setUser }) {
             {...register("email")}
           />
         </div>
-        <input type="submit" className="btn btn-primary" />
+        {isLoading ? (
+          <button className="btn btn-primary" type="button" disabled>
+            <span
+              className="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+            ></span>
+            Loading...
+          </button>
+        ) : (
+          <input type="submit" className="btn btn-primary" />
+        )}
       </form>
     </>
   );
