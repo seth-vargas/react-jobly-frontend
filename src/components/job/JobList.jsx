@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
-import JoblyApi from "../api/api";
-import SearchForm from "./SearchForm";
+import JoblyApi from "../../api/api";
+import SearchForm from "../forms/SearchForm";
 import JobInfo from "./JobInfo";
-import Loading from "./Loading";
+import Loading from "../Loading";
 
 export default function JobList({ applyToJob, hasAppliedToJob }) {
   const [jobs, setJobs] = useState([]);

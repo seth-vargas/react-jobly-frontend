@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import JoblyApi from "../api/api";
+import JoblyApi from "../../api/api";
 import { useState } from "react";
 
 export default function LoginForm({ setToken, setAuth, setUser, setErrors }) {

@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useForm } from "react-hook-form";
-import JoblyApi from "../api/api";
+import JoblyApi from "../../api/api";
 
 export default function SearchForm({ setState, type, setIsLoading }) {
   const { register, handleSubmit, reset } = useForm();

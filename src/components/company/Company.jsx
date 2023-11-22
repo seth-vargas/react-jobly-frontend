@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import JoblyApi from "../api/api";
-import JobInfo from "./JobInfo";
+import JoblyApi from "../../api/api";
+import JobInfo from "../job/JobInfo";
 
 export default function Company({ applyToJob, hasAppliedToJob }) {
   const [company, setCompany] = useState({});

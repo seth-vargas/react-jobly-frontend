@@ -3,14 +3,14 @@ import { Route, Routes, useLocation } from "react-router-dom";
 
 import Layout from "./Layout";
 import Homepage from "./Homepage";
-import SignupForm from "./SignupForm";
-import LoginForm from "./LoginForm";
-import CompanyList from "./CompanyList";
-import JobList from "./JobList";
+import SignupForm from "./forms/SignupForm";
+import LoginForm from "./forms/LoginForm";
+import CompanyList from "./company/CompanyList";
+import JobList from "./job/JobList";
 import Navbar from "./Navbar";
-import EditProfileForm from "./EditProfileForm";
+import EditProfileForm from "./forms/EditProfileForm";
 import NotFound from "./NotFound";
-import Company from "./Company";
+import Company from "./company/Company";
 import RequireAuth from "./RequireAuth";
 
 import useLocalStorage from "../hooks/useLocalStorage";
@@ -35,8 +35,6 @@ export default function App() {
     async function checkForToken() {
       if (token) {
         try {
-          setIsLoading(true);
-
           setAuth(token);
           JoblyApi.token = token;
 
@@ -53,10 +51,10 @@ export default function App() {
           setAuth(undefined);
           setJobIds(undefined);
         }
-        setIsLoading(false);
       }
     }
     checkForToken();
+    setIsLoading(false);
   }, [token]);
 
   useEffect(() => {
@@ -91,16 +89,23 @@ export default function App() {
         setUser={setUser}
         setJobIds={setJobIds}
       />
-      <main className="container my-3">
+
+      <main className="container text-bg-light rounded p-5 mx-auto my-5">
         {errors.length > 0 && (
-          <ul className="alert alert-danger text-center">
+          <div className="alert alert-danger alert-dismissible fade show text-center">
             {errors.map((err) => (
-              <li key={err} className="list-unstyled">
+              <span key={err} className="list-unstyled">
                 {err}
-              </li>
+              </span>
             ))}
-          </ul>
+            <button
+              className="btn-close"
+              data-bs-dismiss="alert"
+              onClick={() => setErrors([])}
+            ></button>
+          </div>
         )}
+
         <Routes>
           <Route path="/" element={<Layout />}>
             {/* Public Routes */}

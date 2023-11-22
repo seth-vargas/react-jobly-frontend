@@ -1,42 +1,32 @@
 /* eslint-disable react/prop-types */
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
-import JoblyApi from "../api/api";
+import JoblyApi from "../../api/api";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-export default function SignupForm({ setToken, setAuth, setUser, setErrors }) {
+export default function EditProfileForm({ user, setUser, setErrors }) {
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
-
   const { register, handleSubmit } = useForm();
+  const navigate = useNavigate();
 
   const onSubmit = async (data) => {
     try {
       setIsLoading(true);
-      setErrors([]);
 
-      let res = await JoblyApi.registerUser(data);
-
-      // store token in localStorage & auth
-      setToken(res.token);
-      setAuth(res.token);
-      JoblyApi.token = res.token;
-
-      let currUser = await JoblyApi.getCurrentUser(res.user.username);
-
-      setUser(currUser);
-
-      // redirect to homepage
+      const newUser = await JoblyApi.editUser(data, user.username);
+      newUser.applications = user.applications;
+      setUser(newUser);
       navigate("/");
     } catch (error) {
       setIsLoading(false);
       setErrors(error);
+      console.log(error);
     }
   };
 
   return (
     <>
-      <h1>Sign Up</h1>
+      <h1>Profile</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-3">
           <label htmlFor="username" className="form-label">
@@ -45,31 +35,11 @@ export default function SignupForm({ setToken, setAuth, setUser, setErrors }) {
           <input
             id="username"
             autoComplete="none"
+            disabled
             className="form-control"
             type="text"
-            {...register("username", {
-              required: true,
-              max: 50,
-              min: 1,
-              maxLength: 50,
-            })}
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="password" className="form-label">
-            Password
-          </label>
-          <input
-            id="password"
-            autoComplete="none"
-            className="form-control"
-            type="password"
-            {...register("password", {
-              required: true,
-              max: 50,
-              min: 6,
-              maxLength: 50,
-            })}
+            defaultValue={user.username}
+            {...register("username")}
           />
         </div>
         <div className="mb-3">
@@ -81,12 +51,8 @@ export default function SignupForm({ setToken, setAuth, setUser, setErrors }) {
             autoComplete="none"
             className="form-control"
             type="text"
-            {...register("firstName", {
-              required: true,
-              max: 50,
-              min: 1,
-              maxLength: 50,
-            })}
+            defaultValue={user.firstName}
+            {...register("firstName")}
           />
         </div>
         <div className="mb-3">
@@ -98,12 +64,8 @@ export default function SignupForm({ setToken, setAuth, setUser, setErrors }) {
             autoComplete="none"
             className="form-control"
             type="text"
-            {...register("lastName", {
-              required: true,
-              max: 50,
-              min: 1,
-              maxLength: 50,
-            })}
+            defaultValue={user.lastName}
+            {...register("lastName")}
           />
         </div>
         <div className="mb-3">
@@ -114,8 +76,9 @@ export default function SignupForm({ setToken, setAuth, setUser, setErrors }) {
             id="email"
             autoComplete="none"
             className="form-control"
-            type="email"
-            {...register("email", { required: true })}
+            type="text"
+            defaultValue={user.email}
+            {...register("email")}
           />
         </div>
         {isLoading ? (
@@ -131,9 +94,6 @@ export default function SignupForm({ setToken, setAuth, setUser, setErrors }) {
           <input type="submit" className="btn btn-primary" />
         )}
       </form>
-      <p className="lead">
-        Already have an account? <Link to="/login">Log In</Link>
-      </p>
     </>
   );
 }

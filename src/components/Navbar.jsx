@@ -25,13 +25,13 @@ export default function Navbar({
   function LoggedIn() {
     return (
       <div className="d-flex align-items-center">
-        <Link to="/companies" className="me-2 text-decoration-none">
+        <Link to="/companies" className="me-2 text-decoration-none text-light">
           Companies
         </Link>
-        <Link to="/jobs" className="me-2 text-decoration-none">
+        <Link to="/jobs" className="me-2 text-decoration-none text-light">
           Jobs
         </Link>
-        <Link to="/profile" className="me-2 text-decoration-none">
+        <Link to="/profile" className="me-2 text-decoration-none text-light">
           Profile
         </Link>
         <button className="btn btn-outline-danger btn-sm" onClick={logout}>
@@ -54,7 +54,7 @@ export default function Navbar({
     );
   }
   return (
-    <nav className="navbar border-bottom">
+    <nav className="navbar navbar-dark bg-dark sticky-top">
       <div className="container-fluid">
         <Link className="navbar-brand" to="/">
           Jobly
